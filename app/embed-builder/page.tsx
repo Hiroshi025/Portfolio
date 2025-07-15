@@ -78,7 +78,7 @@ export default function EmbedBuilderPage() {
             className="flex justify-center mt-6"
           >
             <a
-              href="https://discord.gg/tu-servidor" // Cambia por tu enlace real
+              href="https://discord.gg/YZQCen5xH3" // Cambia por tu enlace real
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-purple-600 hover:to-pink-500 text-white rounded-lg font-semibold shadow-lg transition-all duration-300 group"
@@ -123,7 +123,7 @@ export default function EmbedBuilderPage() {
                   <ul className="space-y-2 text-gray-400">
                     <li>
                       <a
-                        href="#builder"
+                        href="https://discordbuilders.com/"
                         className="hover:text-purple-400 transition-colors"
                       >
                         Builder
@@ -131,7 +131,7 @@ export default function EmbedBuilderPage() {
                     </li>
                     <li>
                       <a
-                        href="#tutorial"
+                        href="https://discord.com/developers/docs/topics/tutorials"
                         className="hover:text-purple-400 transition-colors"
                       >
                         Tutorial
@@ -139,7 +139,7 @@ export default function EmbedBuilderPage() {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="https://discord.com/developers/docs/reference"
                         className="hover:text-purple-400 transition-colors"
                       >
                         Discord API Docs
@@ -154,7 +154,7 @@ export default function EmbedBuilderPage() {
                   <ul className="space-y-2 text-gray-400">
                     <li>
                       <a
-                        href="#"
+                        href="https://discord.com/developers/docs/resources/channel#embed-object-embed-structure"
                         className="hover:text-purple-400 transition-colors"
                       >
                         Markdown Guide
@@ -162,7 +162,7 @@ export default function EmbedBuilderPage() {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="https://discord.com/developers/docs/resources/webhook"
                         className="hover:text-purple-400 transition-colors"
                       >
                         Webhook Guide
@@ -170,7 +170,7 @@ export default function EmbedBuilderPage() {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="https://discord.com/developers/docs/resources/channel#embed-limits"
                         className="hover:text-purple-400 transition-colors"
                       >
                         Embed Limits

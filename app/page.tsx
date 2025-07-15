@@ -14,20 +14,12 @@ import { useInView } from "react-intersection-observer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+	Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import {
-  NotificationProvider,
-  useNotification,
-} from "../components/tools/NotificationContext";
+import { NotificationProvider, useNotification } from "../components/tools/NotificationContext";
 
 interface Repo {
   id: number;
@@ -308,16 +300,16 @@ const PortfolioPage = () => {
               Manga
             </Link>
             <Link
-              href="/games"
+              href="/tools"
               className="text-gray-300 hover:text-purple-400 transition-colors"
             >
-              Juegos
+              Herramientas
             </Link>
             <Link
               href="/docs"
               className="text-gray-300 hover:text-purple-400 transition-colors"
             >
-              Herramientas
+              Documentacion
             </Link>
             <Link
               href="#experience"
