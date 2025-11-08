@@ -8,7 +8,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaCode, FaExpand, FaGithub, FaRandom } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaCode,
+  FaExpand,
+  FaGithub,
+  FaRandom,
+} from "react-icons/fa";
 import { FiGithub, FiMail, FiTwitter } from "react-icons/fi";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -20,10 +26,19 @@ import MangaCard from "@/components/anime/MangaCard";
 import MangaDetails from "@/components/anime/MangaDetails";
 import { Button } from "@/components/ui/button";
 import {
-	Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
-	Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -44,7 +59,7 @@ const imageData = {
   ],
   nsfw: [
     "https://imgs.search.brave.com/ErZtNPEuaeOaSXIt4l0cF2Fn5LA2K1SvcnB2JozaQ7c/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vdWV5WlJy/WWN4MS1tY1UzSmQt/VU9sbm9yVlhxOF9Y/dElPUHFHRjZ4Rl91/RS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlw/TG1WMC9jM2x6ZEdG/MGFXTXVZMjl0L0x6/RXpNelkzTnpBMUwz/SXYvYVd3dk1UWTJO/V1ZrTHpZeS9PREkx/TWpFeU56Y3ZhV3hm/L016QXdlRE13TUM0/Mk1qZ3kvTlRJeE1q/YzNYMlp1YlRndS9h/bkJu",
-    "https://imgs.search.brave.com/FuitBaUG7PbIXvTmzTW9kAp57J1VLO6LuEw_3Q6pxuM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vaGd0T3hC/QWp5WDdGemFHSVpU/bVNlcVNPaFVTZFZ1/UFdMelVDT3hnSTg1/RS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlw/YldGbi9aWE10ZDJs/NGJYQXRaV1F6L01H/RTRObUk0WXpSallU/ZzQvTnpjM016VTVO/R015TG5kcC9lRzF3/TG1OdmJTOW1MMkkx/L1lUSmpZV001TFRs/bU0yUXQvTkRZNVlp/MDRaREV4TFRVei9P/V1V3WWpKbFkyTTFN/aTlrL2FHMTFhRzV4/TFdVeVlqVTAvTlRZ/M0xUSXlOalV0TkRF/MC9PQzA1WW1SbUxX/VTJNbUpsL1lXUTJZ/VFkwWlM1d2JtY3Yv/ZGpFdlptbHNiQzkz/WHpFNS9NakFzYUY4/eU5UWXdMSEZmL09E/QXNjM1J5Y0M5ZllX/UnYvY0hSZlgyRnVh/VzFsWDJkcC9jbXhm/TVRoZmJuTm1kMTlm/L2JXRjRhVzExYlY5/elkyRnMvWlY5MWNG/OWZZbmxmYldGMC9k/R0Y1WVdnd1gyUm9i/WFZvL2JuRXRablZz/YkhacFpYY3UvYW5C/blAzUnZhMlZ1UFdW/NS9TakJsV0VGcFQy/bEtTMVl4L1VXbE1R/MHBvWWtkamFVOXAv/U2tsVmVra3hUbWxL/T1M1bC9lVXA2WkZk/SmFVOXBTakZqL2JU/UTJXVmhDZDA5cVpH/eE4vUjFGNFQwUm5O/VTlFU1hsTy9hbEY2/VG5wT2FFNVhXWGRh/L1JGRjRUbGRXYUUx/SFVYbE8vYlZWM1NX/bDNhV0ZZVG5wSi9h/bTlwWkZoS2RVOXRS/bmRqL1JHOHpXbFJD/YTAxVVp6UlAvVkdk/NVRXcFpNRTE2WTNw/Wi9WRlp0VFVkUk1F/MVVWbXhaL1ZFSnJU/V3BhYkUxRFNYTkov/YlRscFlXbEpObGN4/ZERkSi9ia0pvWkVk/bmFVOXBTbU5NL01s/cGpUREpKTVZsVVNt/cFovVjAwMVRGUnNi/VTB5VVhSTy9SRmsx/V1drd05GcEVSWGhN/L1ZGVjZUMWRWZDFs/cVNteFovTWsweFRX/eDNkbHBIYUhSay9W/MmgxWTFNeGJFMXRT/VEZPL1JGVXlUbmt3/ZVUxcVdURk0vVkZG/NFRrUm5kRTlYU210/YS9hVEZzVG1wS2FW/cFhSbXRPL2JVVXlU/a2RWZFdOSE5XNUov/YVhkcFlVZFdjRm95/YURCSi9hbTlwVUVR/d2VVNVVXWGRKL2FY/ZHBaREpzYTJSSFoy/bFAvYVVrNFVGUkZO/VTFxUVdsbS9WakZr/VEVOS2FHUlhVV2xQ/L2JITnBaRmhLZFU5/dVRteGovYmxwd1dU/SlZObUZYTVdoYS9N/bFYxWkRKR01GcFlT/blJaL1dFcHlTV3d3/YzBsdVpIUmgvZVVr/MlpYbEtkMWxZVW05/Si9hbTlwV0VNNU0y/SldkM1paL2FsWm9U/VzFPYUZsNmEzUlAv/VjFsNldrTXdNRTVx/YkdsTS9WR2hyVFZS/RmRFNVVUVFZhL1ZF/SnBUVzFXYWxsNlZY/bFkvUXpsMFdWaFNN/RmxZYkdoaC9SRUYw/VGtNMWQySnRZMmxN/L1EwcDJZMGRHYW1G/WVVqVkovYW04MVRs/TjNhV05JU25aai9S/emw1WkVkc2RtSnVU/V2xQL2FrRjFUa1JW/YzBsdFpIbFovV0Zw/d1pFaHJhVTlwU21w/YS9WelV3V2xoSmFX/WllNQzVUL1p6SmFR/elZRWkRsUmRVTjUv/ZUVOTU1ITmpXV1pC/VjAxRC9keTE2TVhK/RllWcHJja0oyL2NV/d3dZMkU0",
+    "https://imgs.search.brave.com/FuitBaUG7PbIXvTmzTW9kAp57J1VLO6LuEw_3Q6pxuM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vaGd0T3hC/QWp5WDZGemFHSVpU/bVNlcVNPaFVTZFZ1/UFdMelVDT3hnSTg1/RS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlw/YldGbi9aWE10ZDJs/NGJYQXRaV1F6L01H/RTRObUk0WXpSallU/ZzQvTnpjM016VTVO/R015TG5kcC9lRzF3/TG1OdmJTOW1MMkkx/L1lUSmpZV001TFRs/bU0yUXQvTkRZNVlp/MDRaREV4TFRVei9P/V1V3WWpKbFkyTTFN/aTlrL2FHMTFhRzV4/TFdVeVlqVTAvTlRZ/M0xUSXlOalV0TkRF/MC9PQzA1WW1SbUxX/VTJNbUpsL1lXUTJZ/VFkwWlM1d2JtY3Yv/ZGpFdlptbHNiQzkz/WHpFNS9NakFzYUY4/eU5UWXdMSEZmL09E/QXNjM1J5Y0M5ZllX/UnYvY0hSZlgyRnVh/VzFsWDJkcC9jbXhm/TVRoZmJuTm1kMTlm/L2JXRjRhVzExYlY5/elkyRnMvWlY5MWNG/OWZZbmxmYldGMC9k/R0Y1WVdnd1gyUm9i/WFZvL2JuRXRablZz/YkhacFpYY3UvYW5C/blAzUnZhMlZ1UFdW/NS9TakJsV0VGcFQy/bEtTMVl4L1VXbE1R/MHBvWWtkamFVOXAv/U2tsVmVra3hUbWxL/T1M1bC9lVXA2WkZk/SmFVOXBTakZqL2JU/UTJXVmhDZDA5cVpH/eE4vUjFGNFQwUm5O/VTlFU1hsTy9hbEY2/VG5wT2FFNVhXWGRh/L1JGRjRUbGRXYUUx/SFVYbE8vYlZWM1NX/bDNhV0ZZVG5wSi9h/bTlwWkZoS2RVOXRS/bmRqL1JHOHpXbFJD/YTAxVVp6UlAvVkdk/NVRXcFpNRTE2WTNw/Wi9WRlp0VFVkUk1F/MVVWbXhaL1ZFSnJU/V3BhYkUxRFNYTkov/YlRscFlXbEpObGN4/ZERkSi9ia0pvWkVk/bmFVOXBTbU5NL01s/cGpUREpKTVZsVVNt/cFovVjAwMVRGUnNi/VTB5VVhSTy9SRmsx/V1drd05GcEVSWGhN/L1ZGVjZUMWRWZDFs/cVNteFovTWsweFRX/eDNkbHBIYUhSay9W/MmgxWTFNeGJFMXRT/VEZPL1JGVXlUbmt3/ZVUxcVdURk0vVkZG/NFRrUm5kRTlYU210/YS9hVEZzVG1wS2FW/cFhSbXRPL2JVVXlU/a2RWZFdOSE5XNUov/YVhkcFlVZFdjRm95/YURCSi9hbTlwVUVR/d2VVNVVXWGRKL2FY/ZHBaREpzYTJSSFoy/bFAvYVVrNFVGUkZO/VTFxUVdsbS9WakZr/VEVOS2FHUlhVV2xQ/L2JITnBaRmhLZFU5/dVRteGovYmxwd1dU/SlZObUZYTVdoYS9N/bFYxWkRKR01GcFlT/blJaL1dFcHlTV3d3/YzBsdVpIUmgvZVVr/MlpYbEtkMWxZVW05/Si9hbTlwV0VNNU0y/SldkM1paL2FsWm9U/VzFPYUZsNmEzUlAv/VjFsNldrTXdNRTVx/YkdsTS9WR2hyVFZS/RmRFNVVUVFZhL1ZF/SnBUVzFXYWxsNlZY/bFkvUXpsMFdWaFNN/RmxZYkdoaC9SRUYw/VGtNMWQySnRZMmxN/L1EwcDJZMGRHYW1G/WVVqVkovYW04MVRs/TjNhV05JU25aai9S/emw1WkVkc2RtSnVU/V2xQL2FrRjFUa1JW/YzBsdFpIbFovV0Zw/d1pFaHJhVTlwU21w/YS9WelV3V2xoSmFX/WllNQzVUL1p6SmFR/elZRWkRsUmRVTjUv/ZUVOTU1ITmpXV1pC/VjAxRC9keTE2TVhK/RllWcHJja0oyL2NV/d3dZMkU0",
     "https://imgs.search.brave.com/yBmzdbt65lN8kIT8VrKzO1YzgPgA0tpt107Zqi080TY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdz/LnNlYXJjaC5icmF2/ZS5jb20vd01RR0hv/R1dmc241eG11OUw0/VV83TjRHcmpFOUx2/WUJENjU0MkRXUjMy/WS9yczpmaXQ6NTAw/OjA6MDowL2c6Y2Uv/YUhSMGNITTZMeTlw/TG1WMC9jM2x6ZEdG/MGFXTXVZMjl0L0x6/UTBOekV6T1RrMkwz/SXYvYVd3dk9HWTRN/RGRpTHpVdy9PRGd6/TWpnMk16VXZhV3hm/L05qQXdlRFl3TUM0/MU1EZzQvTXpJNE5q/TTFYM00wZUdjdS9h/bkJu",
   ],
   manga: [
@@ -73,8 +88,6 @@ const imageData = {
     "/placeholder_5.jpg?height=600&width=1200&text=Anime+Feedback+Banner+6",
   ],
   cosplay: [
-    "https://i.pinimg.com/736x/9f/36/d9/9f36d9021e0511cfda0998acdf089af5.jpg",
-    "https://i.pinimg.com/736x/78/b9/d7/78b9d74a54187f0ce37763204897cdfe.jpg",
     "https://i.pinimg.com/736x/05/5f/ec/055feca3ce3225c3507812c7ce2bd7d1.jpg",
     "https://i.pinimg.com/736x/92/33/00/92330057eb152953487b158a2b7d6c20.jpg",
     "https://i.pinimg.com/736x/dc/a1/49/dca1494328677a7d31a5eb1f7b446f52.jpg",
@@ -366,7 +379,9 @@ export default function AnimePage() {
 
     setSearchLoading(true);
     try {
-      let url = `https://api.jikan.moe/v4/manga?q=${encodeURIComponent(query)}&limit=10`;
+      let url = `https://api.jikan.moe/v4/manga?q=${encodeURIComponent(
+        query
+      )}&limit=10`;
       if (genreFilter) url += `&genres=${encodeURIComponent(genreFilter)}`;
       if (typeFilter) url += `&type=${encodeURIComponent(typeFilter)}`;
       if (scoreFilter) url += `&min_score=${encodeURIComponent(scoreFilter)}`;
@@ -423,6 +438,123 @@ export default function AnimePage() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Añadir tema reutilizable para SyntaxHighlighter y componente del diálogo
+  const codeTheme = {
+    plain: { backgroundColor: "#1e1e2d", color: "#e2e8f0" },
+    styles: [
+      { types: ["keyword", "builtin"], style: { color: "#c792ea" } },
+      { types: ["string"], style: { color: "#c3e88d" } },
+      { types: ["function"], style: { color: "#82aaff" } },
+      { types: ["comment"], style: { color: "#636379", fontStyle: "italic" } },
+    ],
+  };
+
+  function ApiExampleDialog({ api }: { api: (typeof APIExamples)[number] }) {
+    const [open, setOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const copyCode = async () => {
+      try {
+        await navigator.clipboard.writeText(api.example);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        setCopied(false);
+      }
+    };
+
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-full border-purple-400 text-purple-400 bg-transparent"
+          >
+            <FaCode className="mr-2" /> Ver Ejemplo
+          </Button>
+        </DialogTrigger>
+
+        <DialogContent className="max-w-3xl p-0 bg-gray-800 border-gray-700">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="flex flex-col"
+          >
+            <div className="flex items-start justify-between p-4 border-b border-gray-700/30">
+              <div>
+                <DialogTitle className="text-purple-400 text-lg font-semibold">
+                  {api.name} - Ejemplo de Código
+                </DialogTitle>
+                <DialogDescription className="text-sm text-gray-300">
+                  Cómo consumir esta API en JavaScript/TypeScript
+                </DialogDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  className={`px-3 py-1 text-sm ${
+                    copied
+                      ? "bg-green-500"
+                      : "bg-purple-600 hover:bg-purple-700"
+                  }`}
+                  onClick={copyCode}
+                >
+                  {copied ? "Copiado" : "Copiar"}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setOpen(false)}
+                  className="text-gray-300"
+                >
+                  Cerrar
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-4 max-h-[60vh] overflow-auto">
+              <SyntaxHighlighter
+                language="javascript"
+                style={codeTheme as any}
+                showLineNumbers
+                wrapLongLines
+                customStyle={{
+                  background: "transparent",
+                  padding: "0.75rem",
+                  borderRadius: 8,
+                  fontSize: 13,
+                }}
+              >
+                {api.example}
+              </SyntaxHighlighter>
+            </div>
+
+            <div className="p-4 border-t border-gray-700/20 flex justify-between items-center">
+              <Link
+                href={api.docs}
+                target="_blank"
+                className="text-sm text-purple-400 hover:underline"
+              >
+                Ver documentación completa
+              </Link>
+              <div className="flex items-center gap-2">
+                <Button
+                  className="bg-purple-600 hover:bg-purple-700"
+                  onClick={copyCode}
+                >
+                  <FaCode className="mr-2" />{" "}
+                  {copied ? "Copiado" : "Copiar Código"}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <AnimatePresence>
       <motion.div
@@ -465,7 +597,11 @@ export default function AnimePage() {
                   Galerías
                 </Button>
               </Link>
-              <Link href="https://host.hiroshi-dev.me/api/v1/api-docs" passHref legacyBehavior>
+              <Link
+                href="https://host.hiroshi-dev.me/api/v1/api-docs"
+                passHref
+                legacyBehavior
+              >
                 <Button
                   variant="ghost"
                   className="text-gray-300 hover:text-white"
@@ -491,7 +627,7 @@ export default function AnimePage() {
         <section className="relative h-[70vh] flex flex-col justify-center items-center text-center overflow-hidden">
           <div className="absolute inset-0">
             <Image
-              src={imageData.waifu4k[0]}
+              src={imageData.waifu4k[0] || "/placeholder.svg"}
               alt="Hero Waifu"
               fill
               className="object-cover opacity-30"
@@ -524,7 +660,7 @@ export default function AnimePage() {
               </Button>
               <Button
                 variant="outline"
-                className="border-purple-400 text-purple-400 hover:bg-purple-900/50"
+                className="border-purple-400 text-purple-400 hover:bg-purple-900/50 bg-transparent"
                 size="lg"
               >
                 <FaCode className="mr-2" /> Ver APIs
@@ -552,11 +688,21 @@ export default function AnimePage() {
                   </div>
                 ) : randomWaifu ? (
                   <div className="relative h-64 w-64 rounded-lg overflow-hidden shadow-lg">
+                    {/* Agregando fallback para waifu aleatoria */}
                     <Image
-                      src={randomWaifu}
+                      src={randomWaifu || "/placeholder.svg"}
                       alt="Random Waifu"
                       fill
                       className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "/placeholder.svg?height=400&width=400&text=Image+Not+Available";
+                        console.error(
+                          "Failed to load waifu image:",
+                          randomWaifu
+                        );
+                      }}
                     />
                   </div>
                 ) : (
@@ -625,11 +771,17 @@ export default function AnimePage() {
                           onClick={() => openImageModal(url)}
                           className="w-full h-64 relative block"
                         >
+                          {/* Agregando manejo de errores para todas las imágenes de galería */}
                           <Image
-                            src={url}
+                            src={url || "/placeholder.svg"}
                             alt={`Waifu ${index + 1}`}
                             fill
                             className="object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src =
+                                "/placeholder.svg?height=400&width=400&text=Image+Error";
+                            }}
                           />
                           <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                             <FaExpand className="text-white text-2xl" />
@@ -654,10 +806,15 @@ export default function AnimePage() {
                           className="w-full h-64 relative block"
                         >
                           <Image
-                            src={url}
+                            src={url || "/placeholder.svg"}
                             alt={`NSFW ${index + 1}`}
                             fill
                             className="object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src =
+                                "/placeholder.svg?height=400&width=400&text=Image+Error";
+                            }}
                           />
                           <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                             <FaExpand className="text-white text-2xl" />
@@ -699,10 +856,15 @@ export default function AnimePage() {
                           className="w-full h-full relative block"
                         >
                           <Image
-                            src={url}
+                            src={url || "/placeholder.svg"}
                             alt={`Manga ${index + 1}`}
                             fill
                             className="object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src =
+                                "/placeholder.svg?height=400&width=400&text=Image+Error";
+                            }}
                           />
                         </button>
                       </CardContent>
@@ -727,9 +889,14 @@ export default function AnimePage() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={url}
+                          src={url || "/placeholder.svg"}
                           alt={`GIF ${index + 1}`}
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src =
+                              "/placeholder.svg?height=400&width=400&text=Image+Error";
+                          }}
                         />
                       </button>
                     </CardContent>
@@ -875,10 +1042,15 @@ export default function AnimePage() {
                     className="w-full h-full relative block"
                   >
                     <Image
-                      src={url}
+                      src={url || "/placeholder.svg"}
                       alt={`Character ${index + 1}`}
                       fill
                       className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "/placeholder.svg?height=400&width=400&text=Image+Error";
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                       <FaExpand className="text-white text-2xl" />
@@ -892,65 +1064,10 @@ export default function AnimePage() {
             </div>
           </div>
 
-          {/* Backgrounds Gallery */}
-          <div className="mb-16">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-semibold text-blue-400">
-                Fondos
-              </h3>
-              <Button
-                variant="ghost"
-                className="text-blue-400 hover:bg-blue-900/20"
-              >
-                Ver todos <FaArrowRight className="ml-2" />
-              </Button>
-            </div>
-            <Swiper
-              modules={[Navigation, Pagination]}
-              spaceBetween={20}
-              slidesPerView={1}
-              navigation
-              pagination={{ clickable: true }}
-              breakpoints={{
-                640: { slidesPerView: 1 },
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 },
-              }}
-              className="h-64"
-            >
-              {imageData.backgrounds.map((url, index) => (
-                <SwiperSlide key={index}>
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative h-full rounded-lg overflow-hidden"
-                  >
-                    <button
-                      onClick={() => openImageModal(url)}
-                      className="w-full h-full relative block"
-                    >
-                      <Image
-                        src={url}
-                        alt={`Background ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <FaExpand className="text-white text-2xl" />
-                      </div>
-                    </button>
-                  </motion.div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-
           {/* Cosplay Gallery */}
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-semibold text-green-400">
-                Cosplay
-              </h3>
+              <h3 className="text-2xl font-semibold text-green-400">Cosplay</h3>
               <Button
                 variant="ghost"
                 className="text-green-400 hover:bg-green-900/20"
@@ -973,10 +1090,15 @@ export default function AnimePage() {
                         className="w-full h-full relative block"
                       >
                         <Image
-                          src={url}
+                          src={url || "/placeholder.svg"}
                           alt={`Cosplay ${index + 1}`}
                           fill
                           className="object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src =
+                              "/placeholder.svg?height=400&width=400&text=Image+Error";
+                          }}
                         />
                         <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                           <FaExpand className="text-white text-2xl" />
@@ -995,135 +1117,75 @@ export default function AnimePage() {
           </div>
         </section>
 
-              {/* API Examples Section */}
-      <section className="py-16 bg-gray-900/50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-2 text-center">APIs de Anime</h2>
-          <p className="text-gray-400 mb-12 text-center max-w-2xl mx-auto">
-            Aprende a consumir estas APIs gratuitas para obtener imágenes de
-            anime en tus proyectos
-          </p>
+        {/* API Examples Section */}
+        <section className="py-16 bg-gray-900/50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold mb-2 text-center">
+              APIs de Anime
+            </h2>
+            <p className="text-gray-400 mb-12 text-center max-w-2xl mx-auto">
+              Aprende a consumir estas APIs gratuitas para obtener imágenes de
+              anime en tus proyectos
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {APIExamples.map((api, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Card className="bg-gray-800/60 border-purple-900/50 h-full">
-                  <CardHeader>
-                    <CardTitle className="text-xl font-bold text-purple-400">
-                      {api.name}
-                    </CardTitle>
-                    <CardDescription>{api.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <h4 className="text-sm font-semibold text-gray-300 mb-2">
-                        Endpoints:
-                      </h4>
-                      <ScrollArea className="h-24 rounded-md bg-gray-900/50 p-2 text-xs">
-                        {Object.entries(api.endpoints).map(
-                          ([type, endpoint]) => (
-                            <div key={type} className="mb-1">
-                              <span className="text-purple-300">{type}:</span>{" "}
-                              <code className="text-gray-400">{endpoint}</code>
-                            </div>
-                          )
-                        )}
-                      </ScrollArea>
-                    </div>
-
-                    <div className="mb-4">
-                      <h4 className="text-sm font-semibold text-gray-300 mb-2">
-                        Categorías:
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {api.categories.map((cat) => (
-                          <span
-                            key={cat}
-                            className="text-xs bg-purple-900/30 text-purple-300 px-2 py-1 rounded"
-                          >
-                            {cat}
-                          </span>
-                        ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {APIExamples.map((api, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Card className="bg-gray-800/60 border-purple-900/50 h-full">
+                    <CardHeader>
+                      <CardTitle className="text-xl font-bold text-purple-400">
+                        {api.name}
+                      </CardTitle>
+                      <CardDescription>{api.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-4">
+                        <h4 className="text-sm font-semibold text-gray-300 mb-2">
+                          Endpoints:
+                        </h4>
+                        <ScrollArea className="h-24 rounded-md bg-gray-900/50 p-2 text-xs">
+                          {Object.entries(api.endpoints).map(
+                            ([type, endpoint]) => (
+                              <div key={type} className="mb-1">
+                                <span className="text-purple-300">{type}:</span>{" "}
+                                <code className="text-gray-400">
+                                  {endpoint}
+                                </code>
+                              </div>
+                            )
+                          )}
+                        </ScrollArea>
                       </div>
-                    </div>
 
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full border-purple-400 text-purple-400"
-                        >
-                          <FaCode className="mr-2" /> Ver Ejemplo
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl bg-gray-800 border-gray-700">
-                        <DialogHeader>
-                          <DialogTitle className="text-purple-400">
-                            {api.name} - Ejemplo de Código
-                          </DialogTitle>
-                          <DialogDescription>
-                            Cómo consumir esta API en JavaScript/TypeScript
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="mt-4">
-                          <SyntaxHighlighter
-                            language="javascript"
-                            theme={{
-                              plain: {
-                                backgroundColor: "#1e1e2d",
-                                color: "#e2e8f0",
-                              },
-                              styles: [
-                                {
-                                  types: ["keyword", "builtin"],
-                                  style: { color: "#c792ea" },
-                                },
-                                {
-                                  types: ["string"],
-                                  style: { color: "#c3e88d" },
-                                },
-                                {
-                                  types: ["function"],
-                                  style: { color: "#82aaff" },
-                                },
-                                {
-                                  types: ["comment"],
-                                  style: {
-                                    color: "#636379",
-                                    fontStyle: "italic",
-                                  },
-                                },
-                              ],
-                            }}
-                          >
-                            {api.example}
-                          </SyntaxHighlighter>
+                      <div className="mb-4">
+                        <h4 className="text-sm font-semibold text-gray-300 mb-2">
+                          Categorías:
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {api.categories.map((cat) => (
+                            <span
+                              key={cat}
+                              className="text-xs bg-purple-900/30 text-purple-300 px-2 py-1 rounded"
+                            >
+                              {cat}
+                            </span>
+                          ))}
                         </div>
-                        <div className="mt-4 flex justify-between items-center">
-                          <Link
-                            href={api.docs}
-                            target="_blank"
-                            className="text-sm text-purple-400 hover:underline"
-                          >
-                            Ver documentación completa
-                          </Link>
-                          <Button className="bg-purple-600 hover:bg-purple-700">
-                            <FaGithub className="mr-2" /> Copiar Código
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                      </div>
+
+                      {/* Usamos el nuevo componente de diálogo para mostrar el ejemplo */}
+                      <ApiExampleDialog api={api} />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
         {/* Image Modal */}
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -1133,13 +1195,13 @@ export default function AnimePage() {
                 {selectedImage.endsWith(".gif") ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={selectedImage}
+                    src={selectedImage || "/placeholder.svg"}
                     alt="Fullscreen"
                     className="object-contain w-full h-full"
                   />
                 ) : (
                   <Image
-                    src={selectedImage}
+                    src={selectedImage || "/placeholder.svg"}
                     alt="Fullscreen"
                     fill
                     className="object-contain"
@@ -1270,10 +1332,18 @@ export default function AnimePage() {
                           <CardContent className="flex flex-col items-center p-6">
                             <div className="relative w-24 h-24 mb-4 rounded-full overflow-hidden border-4 border-green-400 shadow-md">
                               <Image
-                                src={creator.images.jpg.image_url}
+                                src={
+                                  creator.images.jpg.image_url ||
+                                  "/placeholder.svg"
+                                }
                                 alt={creator.name}
                                 fill
                                 className="object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src =
+                                    "/placeholder.svg?height=400&width=400&text=Image+Error";
+                                }}
                               />
                             </div>
                             <h4 className="text-base font-bold text-green-200 text-center mb-1">
@@ -1287,17 +1357,21 @@ export default function AnimePage() {
                             {/* Estadísticas adicionales */}
                             <div className="flex flex-wrap gap-2 justify-center mb-2">
                               {/* Número de obras (si existe) */}
-                              {typeof (creator as any).animeography === "object" && (
+                              {typeof (creator as any).animeography ===
+                                "object" && (
                                 <span className="inline-block bg-green-800/60 text-green-200 text-xs px-2 py-1 rounded font-semibold">
                                   Obras: {(creator as any).animeography.length}
                                 </span>
                               )}
                               {/* Años activo (si existe) */}
-                              {typeof (creator as any).birthday === "string" && typeof (creator as any).years_active === "object" && (creator as any).years_active.length > 0 && (
-                                <span className="inline-block bg-green-800/60 text-green-200 text-xs px-2 py-1 rounded font-semibold">
-                                  Activo: {(creator as any).years_active[0]}
-                                </span>
-                              )}
+                              {typeof (creator as any).birthday === "string" &&
+                                typeof (creator as any).years_active ===
+                                  "object" &&
+                                (creator as any).years_active.length > 0 && (
+                                  <span className="inline-block bg-green-800/60 text-green-200 text-xs px-2 py-1 rounded font-semibold">
+                                    Activo: {(creator as any).years_active[0]}
+                                  </span>
+                                )}
                             </div>
                             <div className="flex items-center gap-2 mt-2">
                               <span className="inline-block bg-green-700/60 text-green-200 text-xs px-3 py-1 rounded-full font-semibold">
