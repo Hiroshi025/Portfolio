@@ -1,7 +1,15 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
-import { Briefcase, Code, GraduationCap, Pause, Play, Rocket, X } from "lucide-react";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
+import {
+  Briefcase,
+  Code,
+  GraduationCap,
+  Pause,
+  Play,
+  Rocket,
+  X,
+} from "lucide-react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,12 +22,20 @@ import { useInView } from "react-intersection-observer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-	Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { NotificationProvider, useNotification } from "../components/tools/NotificationContext";
+import {
+  NotificationProvider,
+  useNotification,
+} from "../components/tools/NotificationContext";
 
 interface Repo {
   id: number;
@@ -39,6 +55,15 @@ interface Repo {
   open_issues_count: number;
   topics?: string[];
   contributors_url: string;
+}
+
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  avatar: string;
+  comment: string;
+  stars?: number; // Nuevo campo opcional
 }
 
 interface RepoDetails extends Repo {
@@ -142,6 +167,44 @@ const PortfolioPage = () => {
     },
     { name: "CSS3", icon: <FiCode className="text-pink-400" />, level: 85 },
   ];
+
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
+  // Nuevo estado para el índice del testimonio actual
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+
+  // Añadir estado para controlar qué testimonios están expandidos
+  const [expandedTestimonials, setExpandedTestimonials] = useState<{
+    [id: number]: boolean;
+  }>({});
+
+  // Función para alternar la expansión de un testimonio
+  const toggleExpandTestimonial = (id: number) => {
+    setExpandedTestimonials((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  // Calcula cuántos testimonios mostrar por página
+  const testimonialsPerPage = 2;
+  const totalPages = Math.ceil(testimonials.length / testimonialsPerPage);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch("/data/comments.json");
+        if (!res.ok) throw new Error("No se pudo cargar comments.json");
+        const data: Testimonial[] = await res.json();
+        setTestimonials(data);
+      } catch (err) {
+        console.error("Error cargando testimonios:", err);
+      } finally {
+        setLoadingTestimonials(false);
+      }
+    };
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -358,6 +421,28 @@ const PortfolioPage = () => {
       </div>
     );
   }
+
+  // Manejo de navegación de testimonios
+  const handlePrevTestimonial = () => {
+    setTestimonialIndex((prev) => (prev === 0 ? 0 : prev - 1));
+  };
+  const handleNextTestimonial = () => {
+    setTestimonialIndex((prev) => (prev >= totalPages - 1 ? prev : prev + 1));
+  };
+  const goToTestimonial = (idx: number) => {
+    setTestimonialIndex(idx);
+  };
+
+  // Navegación con teclado
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") handlePrevTestimonial();
+      if (e.key === "ArrowRight") handleNextTestimonial();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line
+  }, [testimonials, testimonialIndex]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-950 to-gray-900 text-gray-100">
@@ -1298,30 +1383,216 @@ const PortfolioPage = () => {
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Call to action */}
+      <section
+        id="testimonials"
+        className="py-20 px-4 bg-black/50 relative overflow-hidden"
+      >
+        <div className="container mx-auto max-w-6xl relative z-10">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="mt-20 text-center"
+            className="text-center mb-8"
           >
-            <h3 className="text-2xl font-bold text-white mb-4">
-              ¿Listo para trabajar juntos?
-            </h3>
-            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Tengo experiencia creando soluciones digitales a medida.
-              Contáctame para discutir tu proyecto.
+            <h2 className="text-3xl font-bold mb-2">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600">
+                Testimonios
+              </span>
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Opiniones de personas que han trabajado conmigo o han visto mi
+              trabajo.
             </p>
-            <Button
-              asChild
-              className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full font-medium shadow-lg hover:from-pink-600 hover:to-purple-700 transition-all duration-300 shadow-pink-500/30 hover:shadow-pink-500/40"
-              size="lg"
-            >
-              <a href="#contact">Contactar Ahora</a>
-            </Button>
           </motion.div>
+
+          {loadingTestimonials ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="h-40 bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl border border-pink-700/30 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : testimonials.length > 0 ? (
+            <div
+              className="flex flex-col items-center"
+              tabIndex={0}
+              aria-label="Carrusel de testimonios"
+            >
+              <div className="relative w-full max-w-3xl mx-auto">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={testimonialIndex}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -40 }}
+                    transition={{ duration: 0.4 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    {testimonials
+                      .slice(
+                        testimonialIndex * testimonialsPerPage,
+                        testimonialIndex * testimonialsPerPage +
+                          testimonialsPerPage
+                      )
+                      .map((t) => {
+                        // Límite de caracteres para mostrar antes de recortar
+                        const MAX_LENGTH = 260;
+                        const isLong = t.comment.length > MAX_LENGTH;
+                        const expanded = expandedTestimonials[t.id] ?? false;
+                        const displayComment =
+                          isLong && !expanded
+                            ? t.comment.slice(0, MAX_LENGTH) + "..."
+                            : t.comment;
+
+                        return (
+                          <div
+                            key={t.id}
+                            className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 rounded-xl p-6 border border-pink-700/30 flex flex-col h-full"
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-pink-500/40">
+                                <Image
+                                  src={t.avatar}
+                                  alt={t.name}
+                                  width={56}
+                                  height={56}
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <div className="text-white font-semibold">
+                                      {t.name}
+                                    </div>
+                                    <div className="text-sm text-pink-300">
+                                      {t.role}
+                                    </div>
+                                  </div>
+                                  {/* Indicador de estrellas */}
+                                  {typeof t.stars === "number" &&
+                                    t.stars > 0 && (
+                                      <div className="flex items-center ml-2">
+                                        {[...Array(5)].map((_, i) => (
+                                          <svg
+                                            key={i}
+                                            className={`w-4 h-4 ${
+                                              i < (t.stars ?? 0)
+                                                ? "text-yellow-400"
+                                                : "text-gray-600"
+                                            }`}
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                          >
+                                            <polygon points="10 1.5 12.59 7.36 18.9 7.64 13.97 11.97 15.18 18.13 10 14.77 4.82 18.13 6.03 11.97 1.1 7.64 7.41 7.36 10 1.5" />
+                                          </svg>
+                                        ))}
+                                      </div>
+                                    )}
+                                </div>
+                                <p className="text-gray-300 mt-4 text-sm relative">
+                                  {displayComment}
+                                  {isLong && (
+                                    <button
+                                      className="ml-2 text-pink-400 underline text-xs font-semibold hover:text-pink-300 transition-colors"
+                                      onClick={() =>
+                                        toggleExpandTestimonial(t.id)
+                                      }
+                                    >
+                                      {expanded ? "Ver menos" : "Ver más"}
+                                    </button>
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </motion.div>
+                </AnimatePresence>
+                {/* Controles de navegación */}
+                <div className="flex items-center justify-center gap-4 mt-6">
+                  <button
+                    onClick={handlePrevTestimonial}
+                    className={`p-2 rounded-full border transition-colors ${
+                      testimonialIndex === 0
+                        ? "bg-gray-700/60 border-gray-700 text-gray-400 cursor-not-allowed"
+                        : "bg-gray-800/60 hover:bg-pink-500/40 border-pink-700/30 text-pink-300"
+                    }`}
+                    aria-label="Anterior"
+                    disabled={testimonialIndex === 0}
+                    tabIndex={0}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  {/* Indicadores de página */}
+                  <div className="flex gap-1">
+                    {Array.from({ length: totalPages }).map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => goToTestimonial(idx)}
+                        className={`w-3 h-3 rounded-full border-2 transition-all duration-200 mx-0.5 ${
+                          idx === testimonialIndex
+                            ? "bg-pink-400 border-pink-400 scale-110"
+                            : "bg-gray-600 border-gray-700 hover:bg-pink-300"
+                        }`}
+                        aria-label={`Ver página de testimonios ${idx + 1}`}
+                        title={
+                          idx === 0
+                            ? "Primera página"
+                            : idx === totalPages - 1
+                            ? "Última página"
+                            : `Página ${idx + 1}`
+                        }
+                        tabIndex={0}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleNextTestimonial}
+                    className={`p-2 rounded-full border transition-colors ${
+                      testimonialIndex === totalPages - 1
+                        ? "bg-gray-700/60 border-gray-700 text-gray-400 cursor-not-allowed"
+                        : "bg-gray-800/60 hover:bg-pink-500/40 border-pink-700/30 text-pink-300"
+                    }`}
+                    aria-label="Siguiente"
+                    disabled={testimonialIndex === totalPages - 1}
+                    tabIndex={0}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-400 text-center">
+              No hay testimonios disponibles.
+            </div>
+          )}
         </div>
       </section>
 

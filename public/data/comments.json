@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Steve Rivera",
+    "role": "Compañero & Comprador",
+    "avatar": "https://cdn.discordapp.com/avatars/981339172231077959/2b68ec96309ecfbf3291b83fa9927cf3.png?size=1024",
+    "stars": 5,
+    "comment": "Me presento, mi nombre es Freidyn mas conocido como Steve, soy un semi-desarrollador con una amplitud empresarial, trabajo de la mano de mi compañero Hiroshi un gran amigo que como persona es una de las mejores, Hiroshi tiene una visión demasiado grande para proyectos pequeños, medianos y grandes, esta visión nos ha permitido llegar a personas muy agradables, ademas no solo nos destacamos en un solo proyecto, hemos estado en diferentes como desarrollo para Minecraft, para Discord, para Whastapp, para API publicas y privadas, para Telegram y muchas mas cosas que puedan imaginar, aunque ahí cosas que no hemos intentado pero se aprende y nos ampliamos a los limites que mas podamos, en general me ha parecido espectacular trabajar con Hiroshi, muchos años de risas, proyectos y amistad, Grande Hiroshi 🧠🙌"
+  },
+  {
+    "id": 2,
+    "name": "CorgiTheMouse",
+    "role": "Compañero Desarrollador",
+    "stars": 5,
+    "avatar": "https://cdn.discordapp.com/avatars/451471780977311745/e6f635c0acb4280e72b60d6960f3d061.png?size=1024",
+    "comment": "Por mi parte has hecho un buen trabajo en la documentación del backend, dando una guía más explicada al equipo de desarrollo que permite el entendimiento, comprensión  y funcionamiento del proyecto en general."
+  }
+]

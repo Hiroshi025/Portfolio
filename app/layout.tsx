@@ -6,7 +6,7 @@ import "../styles/notifications.css";
 import { NotificationProvider } from "../components/tools/NotificationContext";
 
 export const metadata: Metadata = {
-  title: "Hiroshi025",
+  title: "Hiroshi025 - Portfolio",
   description:
     "Portfolio profesional de Hiroshi025. Desarrollador backend especializado en Python, C++, NestJS y TypeScript. Creador de bots, monitores, herramientas innovadoras y proyectos open source.",
   generator: "Next.js",
