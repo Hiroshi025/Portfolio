@@ -14,5 +14,13 @@
     "stars": 5,
     "avatar": "https://cdn.discordapp.com/avatars/451471780977311745/e6f635c0acb4280e72b60d6960f3d061.png?size=1024",
     "comment": "Por mi parte has hecho un buen trabajo en la documentación del backend, dando una guía más explicada al equipo de desarrollo que permite el entendimiento, comprensión  y funcionamiento del proyecto en general."
+  },
+  {
+    "id": 3,
+    "name": "Mateo Team",
+    "role": "Compañero Desarrollador",
+    "stars": 3,
+    "avatar": "https://cdn.discordapp.com/avatars/910543706489237544/6ae25921575283ab10946237131b4f5d.png?size=4096&ignore=true",
+    "comment": "Hiroshi es muy hábil, versátil a la hora de programar, pues realiza aportes importantes ocupándose tanto del backend como el frontend, realizando buenos diseños en el frontend, integrando APIs con NextJS y documentando el código del backend (lo cual es muy importante a la hora de manejar código pasa su propia legibilidad)."
   }
 ]
